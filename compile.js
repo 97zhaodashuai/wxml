@@ -4,6 +4,7 @@ const exec = pify(childProcess.exec)
 
 async function compile(){
     await exec('npm run dev')
+    await exec('copy  ".\\src\\wxml.js" ".\\dist\\script\\wxml.js"   /y')
     // await exec('cd ./dist && anywhere ')
 }
 
