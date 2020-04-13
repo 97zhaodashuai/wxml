@@ -3,7 +3,7 @@ import Utils from './Utils'
 // import Diff from './Diff'
 import WxVirtualText from './WxVirtualText'
 
-import './Enums'
+// import './Enums'
 
 class WxVirtualNode {
     constructor(tagName, props, newProps, wxKey, wxVkey, children) {
