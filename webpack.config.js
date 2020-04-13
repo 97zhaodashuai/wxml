@@ -17,7 +17,7 @@ plugins = plugins.concat([
 module.exports = {
 
     entry: {
-        fone: './src/index.js'
+        fone: './src/main.js'
     },
 
     output: {
@@ -31,7 +31,7 @@ module.exports = {
             {
                 test: /\.js$/,
                 loader: 'babel-loader',
-                exclude: '/node-modules/',
+                exclude: /node-modules/,
                 query: {
                     presets: ['stage-0']
                 }

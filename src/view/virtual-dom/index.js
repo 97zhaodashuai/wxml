@@ -1,8 +1,15 @@
-const createBodyNode = function (data) {
+import WxVirtualNode from './WxVirtualNode'
+import Utils from './Utils'
+import WxVirtualText from './WxVirtualText'
 
-    let root = window.__generateFunc__()
+
+
+export  const  createBodyNode = function (data) {
+    let page ='./script/wxml.js'
+    let root = window.__generateFunc__(page)
     // t.tag = "body"
-    return createWXVirtualNodeRec(root)
+    let body = createWXVirtualNodeRec(root)
+    return body
 }
 
 const createWXVirtualNodeRec = function (opt) {
