@@ -1,0 +1,14 @@
+{
+    "name": "demo-cli",
+    "version": "1.0.0",
+    "main": "",
+    "scripts": {
+        "dev": "webpack --progress  --config webpack.config.js"
+    },
+    "dependencies": {
+        "babel-core": "^6.26.3",
+        "babel-loader": "^7.1.4",
+        "babel-preset-stage-0": "^6.24.1",
+        "webpack": "^3.12.0"
+    }
+}
