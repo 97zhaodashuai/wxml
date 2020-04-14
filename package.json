@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "main": "",
     "scripts": {
-        "dev": "webpack --progress  --config webpack.config.js"
+        "dev": "webpack --progress  --display-modules  --config webpack.config.js"
     },
     "dependencies": {
         "babel-core": "^6.26.3",

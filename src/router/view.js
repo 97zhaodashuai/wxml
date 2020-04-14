@@ -33,9 +33,6 @@ export  default  class View  {
                 // var root = func('./script/wxml.js')
                 // window.__generateFunc__()
                 // console.log(root)
-
-
-
             })
     }
 

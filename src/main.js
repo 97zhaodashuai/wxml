@@ -1,6 +1,10 @@
 import './router'
 
+
 import './view/exparser'
+import './view/exparser-component'
+import './view/components'
+
 import './view/virtual-dom'
 import View from "./router/view";
 import {firstTimeRender} from "./view/virtual-dom";
@@ -14,7 +18,6 @@ setTimeout(function () {
     ev.data = './script/wxml.js'
     let nodes = firstTimeRender(ev)
     console.log(nodes)
-
 
     console.log('hello fone')
 }, 2000)
