@@ -6,6 +6,9 @@ import './view/exparser-component'
 import './view/components'
 
 import './view/virtual-dom'
+
+import './view/cus-exparser'
+
 import View from "./router/view";
 import {firstTimeRender} from "./view/virtual-dom";
 

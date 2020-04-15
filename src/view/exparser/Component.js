@@ -203,7 +203,7 @@ Component.register = function (nElement) {
     proto: proto,
     template: template,
     defaultValuesJSON: JSON.stringify(defaultValuesJSON),
-    innerEvents: innerEvents
+    // innerEvents: innerEvents
   }
 }
 
@@ -213,7 +213,7 @@ Component.create = function (tagName) {
   let newElement = document.createElement(tagName)
   let sysComponent = Component.list[tagName] || Component.list['']
   let newComponent = Object.create(sysComponent.proto) // 虚拟dom
-
+  // newComponent = Object.create(null)
   Element.initialize(newComponent)
   newComponent.__domElement = newElement
   newElement.__wxElement = newComponent
@@ -234,47 +234,47 @@ Component.create = function (tagName) {
     newComponent.__slotChildren = newElement.childNodes
   }
 
-  newComponent.shadowRoot.__host = newComponent
-  newComponent.$ = templateInstance.idMap
-  newComponent.$$ = newElement
-  templateInstance.slots[''] || (templateInstance.slots[''] = newElement)
-  newComponent.__slots = templateInstance.slots // 占位节点
-  newComponent.__slots[''].__slotChildren = newComponent.childNodes
+  // newComponent.shadowRoot.__host = newComponent
+  // newComponent.$ = templateInstance.idMap
+  // newComponent.$$ = newElement
+  // templateInstance.slots[''] || (templateInstance.slots[''] = newElement)
+  // newComponent.__slots = templateInstance.slots // 占位节点
+  // newComponent.__slots[''].__slotChildren = newComponent.childNodes
 
-  let innerEvents = sysComponent.innerEvents
-  for (let innerEventName in innerEvents) {
-    let innerEventNameSlice = innerEventName.split('.', 2)
-    let listenerName = innerEventNameSlice[innerEventNameSlice.length - 1]
-    let nComponent = newComponent
-    let isRootNode = true
-    if (innerEventNameSlice.length === 2) {
-      if (innerEventNameSlice[0] !== '') {
-        isRootNode = !1
-        innerEventNameSlice[0] !== 'this' &&
-          (nComponent = newComponent.$[innerEventNameSlice[0]])
-      }
-    }
-    if (nComponent) {
-      let innerEvent = innerEvents[innerEventName],
-        listenerIdx = 0
-      for (; listenerIdx < innerEvent.length; listenerIdx++) {
-        if (isRootNode) {
-          addListenerToElement(
-            nComponent.shadowRoot,
-            listenerName,
-            innerEvent[listenerIdx].bind(newComponent)
-          )
-        } else {
-          addListenerToElement(
-            nComponent,
-            listenerName,
-            innerEvent[listenerIdx].bind(newComponent)
-          )
-        }
-      }
-    }
-  }
-  Component._callLifeTimeFuncs(newComponent, 'created')
+  // let innerEvents = sysComponent.innerEvents
+  // for (let innerEventName in innerEvents) {
+  //   let innerEventNameSlice = innerEventName.split('.', 2)
+  //   let listenerName = innerEventNameSlice[innerEventNameSlice.length - 1]
+  //   let nComponent = newComponent
+  //   let isRootNode = true
+  //   if (innerEventNameSlice.length === 2) {
+  //     if (innerEventNameSlice[0] !== '') {
+  //       isRootNode = !1
+  //       innerEventNameSlice[0] !== 'this' &&
+  //         (nComponent = newComponent.$[innerEventNameSlice[0]])
+  //     }
+  //   }
+  //   if (nComponent) {
+  //     let innerEvent = innerEvents[innerEventName],
+  //       listenerIdx = 0
+  //     for (; listenerIdx < innerEvent.length; listenerIdx++) {
+  //       if (isRootNode) {
+  //         addListenerToElement(
+  //           nComponent.shadowRoot,
+  //           listenerName,
+  //           innerEvent[listenerIdx].bind(newComponent)
+  //         )
+  //       } else {
+  //         addListenerToElement(
+  //           nComponent,
+  //           listenerName,
+  //           innerEvent[listenerIdx].bind(newComponent)
+  //         )
+  //       }
+  //     }
+  //   }
+  // }
+  // Component._callLifeTimeFuncs(newComponent, 'created')
   return newComponent
 }
 Component.hasProperty = function (ele, propName) {
