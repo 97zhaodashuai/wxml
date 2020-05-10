@@ -5,6 +5,12 @@ import Behavior from './Behavior'
 import Element from './Element'
 import Observer from './Observer'
 
+import {createVirtualTree} from '../virtual-dom'
+
+
+require('whatwg-fetch')
+
+
 function camelToDashed (txt) {
   return txt.replace(/[A-Z]/g, function (ch) {
     return '-' + ch.toLowerCase()
@@ -13,7 +19,9 @@ function camelToDashed (txt) {
 
 const addListenerToElement = EventManager.addListenerToElement
 
-const Component = function () {}
+const Component = function () {
+}
+
 
 Component.prototype = Object.create(Object.prototype, {
   constructor: {
@@ -22,6 +30,9 @@ Component.prototype = Object.create(Object.prototype, {
     configurable: true
   }
 })
+
+
+
 
 Component.list = Object.create(null)
 Template._setCompnentSystem(Component)
@@ -65,6 +76,65 @@ const normalizeValue = function (value, type) {
       return void 0 === value ? null : value
   }
 }
+
+const genCustomElement = function(path){
+   window.require('./script/mytagjs.js')
+}
+
+
+// registerElement
+Component.CCompontentHolder = function (e) {
+  console.log(e)
+}
+
+// registerElement
+Component.register_cus = function () {
+
+  genCustomElement('./mytagjs.js')
+
+  fetch('./script/mytag.js')
+    .then(function (response) {
+      return response.text()
+    })
+    .then(function (res) {
+      regcus(res)
+    })
+}
+
+const regcus = function(res){
+
+  let nElement = {
+    'is':'wx-my-tag'
+  }
+
+  let componentBehavior = Behavior.create(nElement)
+  let proto = Object.create(Element.prototype, {}) //propDefination
+  proto.__behavior = componentBehavior
+  proto.__lifeTimeFuncs = componentBehavior.getAllLifeTimeFuncs()
+
+  var func = new Function(res)
+  var gfunc = func()
+  var root = gfunc({})
+  root.tag = 'shadow'
+  var vtree = createVirtualTree(root)
+
+  let template = {
+    '__virtualTree':vtree,
+    '_generateFunc':gfunc
+  }
+
+  Component.list[nElement.is] = {
+    proto: proto,
+    template: template,
+    defaultValuesJSON: "{}"
+    // innerEvents: innerEvents
+  }
+
+}
+
+
+
+
 
 // registerElement
 Component.register = function (nElement) {
@@ -203,7 +273,7 @@ Component.register = function (nElement) {
     proto: proto,
     template: template,
     defaultValuesJSON: JSON.stringify(defaultValuesJSON),
-    // innerEvents: innerEvents
+    innerEvents: innerEvents
   }
 }
 
@@ -218,9 +288,15 @@ Component.create = function (tagName) {
   newComponent.__domElement = newElement
   newElement.__wxElement = newComponent
   newComponent.__propData = JSON.parse(sysComponent.defaultValuesJSON)
-  let templateInstance = (newComponent.__templateInstance = sysComponent.template.createInstance(
-    newComponent
-  )) // 参数多余？
+
+  let templateInstance = {}
+  if(tagName == 'wx-my-tag'){
+    templateInstance.shadowRoot = sysComponent.template.__virtualTree.render();
+  }else{
+    templateInstance = (newComponent.__templateInstance = sysComponent.template.createInstance(
+        newComponent
+    ))
+  }
 
   if (templateInstance.shadowRoot instanceof Element) {
     // VirtualNode
@@ -234,47 +310,47 @@ Component.create = function (tagName) {
     newComponent.__slotChildren = newElement.childNodes
   }
 
-  // newComponent.shadowRoot.__host = newComponent
-  // newComponent.$ = templateInstance.idMap
-  // newComponent.$$ = newElement
-  // templateInstance.slots[''] || (templateInstance.slots[''] = newElement)
-  // newComponent.__slots = templateInstance.slots // 占位节点
-  // newComponent.__slots[''].__slotChildren = newComponent.childNodes
+  newComponent.shadowRoot.__host = newComponent
+  newComponent.$ = templateInstance.idMap
+  newComponent.$$ = newElement
+  templateInstance.slots[''] || (templateInstance.slots[''] = newElement)
+  newComponent.__slots = templateInstance.slots // 占位节点
+  newComponent.__slots[''].__slotChildren = newComponent.childNodes
 
-  // let innerEvents = sysComponent.innerEvents
-  // for (let innerEventName in innerEvents) {
-  //   let innerEventNameSlice = innerEventName.split('.', 2)
-  //   let listenerName = innerEventNameSlice[innerEventNameSlice.length - 1]
-  //   let nComponent = newComponent
-  //   let isRootNode = true
-  //   if (innerEventNameSlice.length === 2) {
-  //     if (innerEventNameSlice[0] !== '') {
-  //       isRootNode = !1
-  //       innerEventNameSlice[0] !== 'this' &&
-  //         (nComponent = newComponent.$[innerEventNameSlice[0]])
-  //     }
-  //   }
-  //   if (nComponent) {
-  //     let innerEvent = innerEvents[innerEventName],
-  //       listenerIdx = 0
-  //     for (; listenerIdx < innerEvent.length; listenerIdx++) {
-  //       if (isRootNode) {
-  //         addListenerToElement(
-  //           nComponent.shadowRoot,
-  //           listenerName,
-  //           innerEvent[listenerIdx].bind(newComponent)
-  //         )
-  //       } else {
-  //         addListenerToElement(
-  //           nComponent,
-  //           listenerName,
-  //           innerEvent[listenerIdx].bind(newComponent)
-  //         )
-  //       }
-  //     }
-  //   }
-  // }
-  // Component._callLifeTimeFuncs(newComponent, 'created')
+  let innerEvents = sysComponent.innerEvents
+  for (let innerEventName in innerEvents) {
+    let innerEventNameSlice = innerEventName.split('.', 2)
+    let listenerName = innerEventNameSlice[innerEventNameSlice.length - 1]
+    let nComponent = newComponent
+    let isRootNode = true
+    if (innerEventNameSlice.length === 2) {
+      if (innerEventNameSlice[0] !== '') {
+        isRootNode = !1
+        innerEventNameSlice[0] !== 'this' &&
+          (nComponent = newComponent.$[innerEventNameSlice[0]])
+      }
+    }
+    if (nComponent) {
+      let innerEvent = innerEvents[innerEventName],
+        listenerIdx = 0
+      for (; listenerIdx < innerEvent.length; listenerIdx++) {
+        if (isRootNode) {
+          addListenerToElement(
+            nComponent.shadowRoot,
+            listenerName,
+            innerEvent[listenerIdx].bind(newComponent)
+          )
+        } else {
+          addListenerToElement(
+            nComponent,
+            listenerName,
+            innerEvent[listenerIdx].bind(newComponent)
+          )
+        }
+      }
+    }
+  }
+  Component._callLifeTimeFuncs(newComponent, 'created')
   return newComponent
 }
 Component.hasProperty = function (ele, propName) {
@@ -294,3 +370,5 @@ Component.register({
 })
 
 export default Component
+
+window.Compontent = Component.CCompontentHolder

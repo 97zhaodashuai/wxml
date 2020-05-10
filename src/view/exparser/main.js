@@ -35,6 +35,7 @@ export {
 // Register
 export const registerBehavior = Behavior.create
 export const registerElement = Component.register
+export const registerCusElement = Component.register_cus
 export const componentList = Component.list
 
 // Create node

@@ -12,6 +12,7 @@ function setGlobalPageAttr (name, value) {
     window[name] = value
     window.__curPage__ = {
         name: name,
+
         value: value
     }
 }
@@ -40,6 +41,13 @@ const firstTimeRender = function (event) {
     // wd.publishPageEvent(domReady, {})
     // TouchEvents.enablePullUpRefresh()
 }
+
+const  createVirtualTree = function (root) {
+    let body = createWXVirtualNodeRec(root)
+    return body
+}
+
+
 
 
 
@@ -89,6 +97,7 @@ const createWXVirtualNode = function (
 
 
 export {
-    firstTimeRender
+    firstTimeRender,
+    createVirtualTree
 }
 
